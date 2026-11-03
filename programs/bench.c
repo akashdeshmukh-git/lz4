@@ -278,7 +278,11 @@ static int BMK_benchMem(const void* srcBuffer, size_t srcSize,
             END_PROCESS(1, "allocation error - decompression state");
     }
 
-    if (strlen(displayName)>17) displayName += strlen(displayName)-17;   /* can only display 17 characters */
+    {
+        /* cache strlen() to avoid redundant string traversals */
+        size_t const dLen = strlen(displayName);
+        if (dLen>17) displayName += dLen-17;   /* can only display 17 characters */
+    }
 
     /* frame parameters */
     prefs.compressionLevel = cLevel;
