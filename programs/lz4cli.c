@@ -296,8 +296,10 @@ static const char* lastNameFromPath(const char* path)
    */
 static int exeNameMatch(const char* exeName, const char* test)
 {
-    return !strncmp(exeName, test, strlen(test)) &&
-        (exeName[strlen(test)] == '\0' || exeName[strlen(test)] == '.');
+    /* cache strlen() to avoid redundant string traversals */
+    size_t const testLen = strlen(test);
+    return !strncmp(exeName, test, testLen) &&
+        (exeName[testLen] == '\0' || exeName[testLen] == '.');
 }
 
 /*! readU32FromCharChecked() :
