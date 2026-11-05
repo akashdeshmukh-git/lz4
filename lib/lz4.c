@@ -360,9 +360,14 @@ typedef enum {
 #  endif
 #endif
 
-#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+/*
+ * ⚡ Bolt: Endianness check optimization
+ * Using static macros instead of a runtime check function avoids a performance penalty
+ * on platforms where endianness can be determined at compile time.
+ */
+#if (defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)) || defined(_WIN32) || defined(__LITTLE_ENDIAN__) || defined(__x86_64__) || defined(__i386__)
 #define LZ4_isLittleEndian() 1
-#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#elif (defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)) || defined(__BIG_ENDIAN__)
 #define LZ4_isLittleEndian() 0
 #else
 static unsigned LZ4_isLittleEndian(void)
