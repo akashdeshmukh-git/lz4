@@ -1,3 +1,7 @@
 ## 2024-05-18 - [Endianness check optimization]
 **Learning:** `LZ4_isLittleEndian` and `XXH_isLittleEndian` functions are called very frequently on modern systems, and the compiler sometimes isn't able to completely optimize them away, because they involve a union and memory check, leading to slight overhead compared to a constant macro when the platform endianness is statically known at compile time via `__BYTE_ORDER__`.
 **Action:** Statically define endianness based on `__BYTE_ORDER__` compiler macros if they are available, falling back to the existing runtime check otherwise.
+
+## 2024-05-19 - [Compiler optimization of runtime endianness checks]
+**Learning:** Checking macro definitions alone (`defined(__LITTLE_ENDIAN)`) is unsafe because some compilers/headers (e.g. `<endian.h>` in glibc) define both `__LITTLE_ENDIAN` and `__BIG_ENDIAN` macros simultaneously to their respective byte-order constants for use in comparisons (e.g., `__BYTE_ORDER == __LITTLE_ENDIAN`). Blindly checking for the presence of the macro definition rather than evaluating its value leads to fatal data corruption on big-endian systems.
+**Action:** When adding static compile-time endianness checks, use architecture-specific macros (`__ARMEL__`, `__AARCH64EL__`, `_MIPSEL`) or OS-specific macros (`_WIN32`) when standard equality checks (`__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__`) are missing (as is the case with MSVC).
