@@ -217,7 +217,11 @@ typedef enum { XXH_bigEndian=0, XXH_littleEndian=1 } XXH_endianness;
 
 /* XXH_CPU_LITTLE_ENDIAN can be defined externally, for example on the compiler command line */
 #ifndef XXH_CPU_LITTLE_ENDIAN
-#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+#if defined(_MSC_VER) && defined(_WIN32)
+/* ⚡ Bolt: statically define endianness for MSVC on Windows to avoid runtime checks
+   This reduces branch mispredictions and speeds up hash and memory operations */
+#   define XXH_CPU_LITTLE_ENDIAN   1
+#elif defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
 #   define XXH_CPU_LITTLE_ENDIAN   1
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 #   define XXH_CPU_LITTLE_ENDIAN   0

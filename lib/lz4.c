@@ -360,7 +360,11 @@ typedef enum {
 #  endif
 #endif
 
-#if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+#if defined(_MSC_VER) && defined(_WIN32)
+/* ⚡ Bolt: statically define endianness for MSVC on Windows to avoid runtime checks
+   This reduces branch mispredictions and speeds up hash and memory operations */
+#  define LZ4_isLittleEndian() 1
+#elif defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
 #define LZ4_isLittleEndian() 1
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 #define LZ4_isLittleEndian() 0
