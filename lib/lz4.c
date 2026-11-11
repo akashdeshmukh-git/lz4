@@ -364,6 +364,8 @@ typedef enum {
 #define LZ4_isLittleEndian() 1
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 #define LZ4_isLittleEndian() 0
+#elif defined(_WIN32) || defined(__i386__) || defined(__x86_64__)
+#define LZ4_isLittleEndian() 1
 #else
 static unsigned LZ4_isLittleEndian(void)
 {

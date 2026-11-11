@@ -221,6 +221,8 @@ typedef enum { XXH_bigEndian=0, XXH_littleEndian=1 } XXH_endianness;
 #   define XXH_CPU_LITTLE_ENDIAN   1
 #elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 #   define XXH_CPU_LITTLE_ENDIAN   0
+#elif defined(_WIN32) || defined(__i386__) || defined(__x86_64__)
+#   define XXH_CPU_LITTLE_ENDIAN   1
 #else
 static XXH_endianness XXH_isLittleEndian(void)
 {
